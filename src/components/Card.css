@@ -87,12 +87,16 @@
 }
 
 .card.matched {
-  opacity: 0.8;
   pointer-events: none;
+}
+
+.card.matched .card-inner {
+  transform: rotateY(180deg);
 }
 
 .card.matched .card-front {
   background-color: #f8f9fa;
+  opacity: 1;
 }
 
 @media (max-width: 768px) {
