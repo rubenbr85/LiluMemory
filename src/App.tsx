@@ -1,32 +1,64 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { MemoryGame } from './components/MemoryGame'
+import axios from 'axios'
+import './App.css'
+
+interface Pokemon {
+  id: number;
+  name: string;
+  imageUrl: string;
+}
 
 function App() {
+  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPokemons = async () => {
+      try {
+        // Obtener un número aleatorio de Pokémon entre 4 y 15
+        const numPokemons = Math.floor(Math.random() * (15 - 4 + 1)) + 4;
+        
+        // Obtener la lista de Pokémon
+        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=${numPokemons}`);
+        const pokemonList = response.data.results;
+
+        // Obtener los detalles de cada Pokémon
+        const pokemonDetails = await Promise.all(
+          pokemonList.map(async (pokemon: { url: string }) => {
+            const detailResponse = await axios.get(pokemon.url);
+            return {
+              id: detailResponse.data.id,
+              name: detailResponse.data.name,
+              imageUrl: detailResponse.data.sprites.front_default
+            };
+          })
+        );
+
+        setPokemons(pokemonDetails);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching pokemons:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchPokemons();
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-      <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="bg-white p-8 rounded-lg shadow-xl"
-      >
-        <motion.h1
-          initial={{ y: -20 }}
-          animate={{ y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="text-4xl font-bold text-gray-800 mb-4"
-        >
-          Hello World!
-        </motion.h1>
-        <motion.p
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="text-gray-600"
-        >
-          Welcome to your new React + Tailwind + Framer Motion project
-        </motion.p>
-      </motion.div>
+    <div className="app">
+      <header className="app-header">
+        <h1>Pokémon Memory Game</h1>
+      </header>
+      <main>
+        {loading ? (
+          <div className="loading">Cargando Pokémon...</div>
+        ) : (
+          <MemoryGame characters={pokemons} />
+        )}
+      </main>
     </div>
   )
 }
