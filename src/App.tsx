@@ -1,62 +1,92 @@
-import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import React, { useState, useEffect, useRef } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { MemoryGame } from './components/MemoryGame'
-import axios from 'axios'
 import './App.css'
-
-interface Pokemon {
-  id: number;
-  name: string;
-  imageUrl: string;
-}
+import { SOURCES, DEFAULT_SOURCE, SourceType } from './constants/sources'
+import { fetchCharacters, Character } from './services/characterService'
 
 function App() {
-  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+  const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState(true);
+  const [source, setSource] = useState<SourceType>(DEFAULT_SOURCE);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const fetchPokemons = async () => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const loadCharacters = async () => {
+      setLoading(true);
       try {
-        // Obtener un número aleatorio de Pokémon entre 4 y 15
-        const numPokemons = Math.floor(Math.random() * (15 - 4 + 1)) + 4;
-        
-        // Obtener la lista de Pokémon
-        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=${numPokemons}`);
-        const pokemonList = response.data.results;
-
-        // Obtener los detalles de cada Pokémon
-        const pokemonDetails = await Promise.all(
-          pokemonList.map(async (pokemon: { url: string }) => {
-            const detailResponse = await axios.get(pokemon.url);
-            return {
-              id: detailResponse.data.id,
-              name: detailResponse.data.name,
-              imageUrl: detailResponse.data.sprites.front_default
-            };
-          })
-        );
-
-        setPokemons(pokemonDetails);
-        setLoading(false);
+        const data = await fetchCharacters(source);
+        setCharacters(data);
       } catch (error) {
-        console.error('Error fetching pokemons:', error);
+        console.error('Error loading characters:', error);
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchPokemons();
-  }, []);
+    loadCharacters();
+  }, [source]);
 
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Pokémon Memory Game</h1>
+        <h1>Memory Game</h1>
+        <div className="source-selector" ref={dropdownRef}>
+          <button 
+            className="source-selector-button"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          >
+            ⚙️
+          </button>
+          <AnimatePresence>
+            {isDropdownOpen && (
+              <motion.div
+                className="dropdown-menu"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                <button
+                  className={`dropdown-item ${source === SOURCES.DISNEY ? 'active' : ''}`}
+                  onClick={() => {
+                    setSource(SOURCES.DISNEY);
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  Disney
+                </button>
+                <button
+                  className={`dropdown-item ${source === SOURCES.POKEMON ? 'active' : ''}`}
+                  onClick={() => {
+                    setSource(SOURCES.POKEMON);
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  Pokémon
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </header>
       <main>
         {loading ? (
-          <div className="loading">Cargando Pokémon...</div>
+          <div className="loading">Cargando personajes...</div>
         ) : (
-          <MemoryGame characters={pokemons} />
+          <MemoryGame characters={characters} />
         )}
       </main>
     </div>
