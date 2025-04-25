@@ -23,46 +23,58 @@
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  border-radius: 12px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  border: 8px solid white;
-  background: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
 .card-front {
   background-color: white;
   transform: rotateY(180deg);
-  padding: 15px;
+  padding: 8px;
+}
+
+.card-front::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 12px solid white;
+  border-radius: 8px;
+  pointer-events: none;
 }
 
 .card-back {
-  background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+  background-color: #dae6f2;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 5px,
+    #c5d6e8 5px,
+    #c5d6e8 10px
+  );
   position: relative;
-  overflow: hidden;
 }
 
 .card-back::before {
   content: '';
   position: absolute;
-  width: 150%;
-  height: 150%;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 10px,
-    rgba(255, 255, 255, 0.1) 10px,
-    rgba(255, 255, 255, 0.1) 20px
-  );
-  transform: rotate(45deg);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 12px solid white;
+  border-radius: 8px;
 }
 
 .card-front img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   border-radius: 4px;
 }
 
@@ -75,21 +87,25 @@
 }
 
 .card.matched {
-  opacity: 0.7;
+  opacity: 0.8;
   pointer-events: none;
 }
 
 .card.matched .card-front {
-  background-color: #e8f5e9;
-  border-color: #81c784;
+  background-color: #f8f9fa;
 }
 
 @media (max-width: 768px) {
-  .card-back-content {
-    font-size: 2rem;
+  .card-front::after,
+  .card-back::before {
+    border-width: 8px;
   }
   
-  .card-front, .card-back {
-    border-width: 6px;
+  .card-front {
+    padding: 6px;
+  }
+  
+  .card-back-content {
+    font-size: 2rem;
   }
 } 
