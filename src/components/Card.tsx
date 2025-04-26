@@ -1,14 +1,6 @@
 import { useState } from 'react';
+import { CardProps } from '../models/CardProps';
 import './Card.css';
-
-interface CardProps {
-  id: number;
-  name: string;
-  imageUrl: string;
-  isFlipped: boolean;
-  isMatched: boolean;
-  onClick: () => void;
-}
 
 export const Card = ({ id, name, imageUrl, isFlipped, isMatched, onClick }: CardProps) => {
   return (
