@@ -1,38 +1,36 @@
 import { useState, useEffect } from 'react';
 import { Card } from './Card';
+import { Character } from '../models/Character';
+import { CardModel } from '../models/CardModel';
 import './MemoryGame.css';
-
-interface Character {
-  id: number;
-  name: string;
-  imageUrl: string;
-}
 
 interface MemoryGameProps {
   characters: Character[];
 }
 
 export const MemoryGame = ({ characters }: MemoryGameProps) => {
-  const [cards, setCards] = useState<Character[]>([]);
+  const [cards, setCards] = useState<CardModel[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [matchedPairs, setMatchedPairs] = useState<number[]>([]);
   const [isGameComplete, setIsGameComplete] = useState(false);
 
   useEffect(() => {
     // Duplicar y mezclar las cartas
-    const duplicatedCards = [...characters, ...characters].map((card, index) => ({
-      ...card,
-      id: index
+    const duplicatedCards = [...characters, ...characters].map((character, index) => ({
+      id: index,
+      idCharacter: character.id,
+      name: character.name,
+      imageUrl: character.imageUrl
     }));
     const shuffledCards = duplicatedCards.sort(() => Math.random() - 0.5);
     setCards(shuffledCards);
   }, [characters]);
 
   useEffect(() => {
-    if (matchedPairs.length === characters.length) {
+    if (matchedPairs.length === cards.length) {
       setIsGameComplete(true);
     }
-  }, [matchedPairs, characters.length]);
+  }, [matchedPairs, cards.length]);
 
   const handleCardClick = (cardId: number) => {
     if (flippedCards.length === 2 || flippedCards.includes(cardId) || matchedPairs.includes(cardId)) {
@@ -47,7 +45,7 @@ export const MemoryGame = ({ characters }: MemoryGameProps) => {
       const firstCardData = cards.find(card => card.id === firstCard);
       const secondCardData = cards.find(card => card.id === secondCard);
 
-      if (firstCardData?.name === secondCardData?.name) {
+      if (firstCardData?.idCharacter === secondCardData?.idCharacter) {
         setMatchedPairs([...matchedPairs, firstCard, secondCard]);
         setFlippedCards([]);
       } else {
