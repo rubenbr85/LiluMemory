@@ -1,10 +1,5 @@
 import axios from 'axios';
-
-export interface PokemonCharacter {
-  id: number;
-  name: string;
-  imageUrl: string;
-}
+import { PokemonCharacter } from '../models/PokemonCharacter';
 
 export const fetchPokemonCharacters = async (limit: number): Promise<PokemonCharacter[]> => {
   try {
@@ -14,11 +9,13 @@ export const fetchPokemonCharacters = async (limit: number): Promise<PokemonChar
     const pokemonDetails = await Promise.all(
       pokemonList.map(async (pokemon: { url: string }) => {
         const detailResponse = await axios.get(pokemon.url);
-        return {
-          id: detailResponse.data.id,
-          name: detailResponse.data.name,
-          imageUrl: detailResponse.data.sprites.front_default
-        };
+        return new PokemonCharacter(
+          detailResponse.data.id,
+          detailResponse.data.name,
+          detailResponse.data.sprites.front_default,
+          detailResponse.data.types.map((type: any) => type.type.name),
+          detailResponse.data.abilities.map((ability: any) => ability.ability.name)
+        );
       })
     );
 

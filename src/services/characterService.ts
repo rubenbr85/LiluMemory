@@ -1,9 +1,10 @@
 import { SourceType } from '../constants/sources';
-import { fetchDisneyCharacters, DisneyCharacter } from './disneyService';
-import { fetchPokemonCharacters, PokemonCharacter } from './pokemonService';
+import { fetchDisneyCharacters } from './disneyService';
+import { fetchPokemonCharacters } from './pokemonService';
 import { getRandomNumber } from '../utils/random';
-
-export type Character = DisneyCharacter | PokemonCharacter;
+import { Character } from '../models/Character';
+import { DisneyCharacter } from '../models/DisneyCharacter';
+import { PokemonCharacter } from '../models/PokemonCharacter';
 
 const MIN_CHARACTERS = 4;
 const MAX_CHARACTERS = 15;
