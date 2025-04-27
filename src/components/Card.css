@@ -1,6 +1,7 @@
 .card {
   perspective: 1000px;
-  width: 100%;
+  width: 150px;
+  height: 150px;
   aspect-ratio: 1;
   cursor: pointer;
 }
