@@ -1,12 +1,13 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SOURCES, SourceType } from '../constants/sources';
+import { SOURCES } from '../constants/sources';
+import { CharacterSource } from '../models/CharacterSource';
 
 interface SourceSelectorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  currentSource: SourceType;
-  onSourceChange: (source: SourceType) => void;
+  currentSource: CharacterSource;
+  onSourceChange: (source: CharacterSource) => void;
 }
 
 export const SourceSelectorModal: React.FC<SourceSelectorModalProps> = ({
@@ -36,24 +37,26 @@ export const SourceSelectorModal: React.FC<SourceSelectorModalProps> = ({
           >
             <h2>Seleccionar Fuente</h2>
             <div className="source-options">
-              <button
-                className={`source-option ${currentSource === SOURCES.DISNEY ? 'active' : ''}`}
-                onClick={() => {
-                  onSourceChange(SOURCES.DISNEY);
-                  onClose();
-                }}
-              >
-                Disney
-              </button>
-              <button
-                className={`source-option ${currentSource === SOURCES.POKEMON ? 'active' : ''}`}
-                onClick={() => {
-                  onSourceChange(SOURCES.POKEMON);
-                  onClose();
-                }}
-              >
-                Pokémon
-              </button>
+              {SOURCES.map((source) => (
+                <button
+                  key={source.id}
+                  className={`source-option ${currentSource.id === source.id ? 'active' : ''}`}
+                  onClick={() => {
+                    onSourceChange(source);
+                    onClose();
+                  }}
+                >
+                  <img
+                    src={source.imageMenu}
+                    alt={source.nombre}
+                    onError={e => {
+                      (e.currentTarget as HTMLImageElement).src =
+                        'https://via.placeholder.com/40x40?text=IMG';
+                    }}
+                  />
+                  <span>{source.nombre}</span>
+                </button>
+              ))}
             </div>
             <button className="close-button" onClick={onClose}>
               Cerrar

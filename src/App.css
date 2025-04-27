@@ -177,6 +177,19 @@ main {
   transition: all 0.2s;
   font-size: 1.1rem;
   width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.source-option img {
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
+  border-radius: 50%;
+  filter: grayscale(1) brightness(0.7);
+  background: #e0e0e0;
+  display: block;
 }
 
 .source-option:hover {

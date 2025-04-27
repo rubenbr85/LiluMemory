@@ -2,14 +2,15 @@ import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MemoryGame } from './components/MemoryGame'
 import './App.css'
-import { SOURCES, DEFAULT_SOURCE, SourceType } from './constants/sources'
+import { SOURCES, DEFAULT_SOURCE } from './constants/sources'
 import { fetchCharacters } from './services/characterService'
 import { Character } from './models/Character'
+import { CharacterSource } from './models/CharacterSource'
 
 function App() {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState(true);
-  const [source, setSource] = useState<SourceType>(DEFAULT_SOURCE);
+  const [source, setSource] = useState<CharacterSource>(DEFAULT_SOURCE);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -49,7 +50,7 @@ function App() {
             className="source-selector-button"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            ⚙️
+            <img src={source.imageMenu} alt={source.nombre} />
           </button>
           <AnimatePresence>
             {isDropdownOpen && (
@@ -60,24 +61,19 @@ function App() {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
               >
-                <button
-                  className={`dropdown-item ${source === SOURCES.DISNEY ? 'active' : ''}`}
-                  onClick={() => {
-                    setSource(SOURCES.DISNEY);
-                    setIsDropdownOpen(false);
-                  }}
-                >
-                  Disney
-                </button>
-                <button
-                  className={`dropdown-item ${source === SOURCES.POKEMON ? 'active' : ''}`}
-                  onClick={() => {
-                    setSource(SOURCES.POKEMON);
-                    setIsDropdownOpen(false);
-                  }}
-                >
-                  Pokémon
-                </button>
+                {SOURCES.map((sourceOption) => (
+                  <button
+                    key={sourceOption.id}
+                    className={`dropdown-item ${source.id === sourceOption.id ? 'active' : ''}`}
+                    onClick={() => {
+                      setSource(sourceOption);
+                      setIsDropdownOpen(false);
+                    }}
+                  >
+                    <img src={sourceOption.imageMenu} alt={sourceOption.nombre} />
+                    <span>{sourceOption.nombre}</span>
+                  </button>
+                ))}
               </motion.div>
             )}
           </AnimatePresence>
