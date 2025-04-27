@@ -8,13 +8,13 @@ export const SOURCES: CharacterSource[] = [
     id: SOURCE_POKEMON_ID,
     orden: 1,
     nombre: 'Pokemon',
-    imageMenu: '/src/images/sources/pokemon.svg'
+    imageMenu: '/images/sources/pokemon.svg'
   },
   {
     id: SOURCE_DISNEY_ID,
     orden: 2,
     nombre: 'Disney',
-    imageMenu: '/src/images/sources/disney.svg'
+    imageMenu: '/images/sources/disney.svg'
   }
 ];
 
