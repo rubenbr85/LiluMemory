@@ -44,7 +44,7 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Memory Game</h1>
+        <h1>Lilu Memory</h1>
         <div className="source-selector" ref={dropdownRef}>
           <button 
             className="source-selector-button"
