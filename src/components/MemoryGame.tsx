@@ -27,7 +27,7 @@ export const MemoryGame = ({ characters }: MemoryGameProps) => {
   }, [characters]);
 
   useEffect(() => {
-    if (matchedPairs.length === cards.length) {
+    if (matchedPairs.length === cards.length && matchedPairs.length > 0) {
       setIsGameComplete(true);
     }
   }, [matchedPairs, cards.length]);
