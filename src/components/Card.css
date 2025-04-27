@@ -137,4 +137,14 @@
   .card-back-content {
     font-size: 2rem;
   }
+}
+
+@media (max-width: 480px) {
+  .card {
+    width: 100px;
+    height: 100px;
+  }
+  .card-back-content {
+    font-size: 1.5rem;
+  }
 } 
