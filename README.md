@@ -46,8 +46,6 @@ Puedes personalizarlos editando el archivo SVG base `icon-memory.svg` y convirti
 - CSS Modules
 - Vite PWA
 
-## Autoría
-Desarrollado por [Tu Nombre].
 
 ---
 ¡Disfruta jugando y entrenando tu memoria! 
