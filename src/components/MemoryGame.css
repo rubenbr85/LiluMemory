@@ -57,7 +57,7 @@
 
 @media (max-width: 768px) {
   .game-board {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 10px;
     padding: 15px;
   }
@@ -71,7 +71,7 @@
 
 @media (max-width: 480px) {
   .game-board {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 8px;
     padding: 10px;
   }
