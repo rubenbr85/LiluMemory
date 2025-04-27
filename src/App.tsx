@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { MemoryGame } from './components/MemoryGame'
 import './App.css'
 import { SOURCES, DEFAULT_SOURCE, SourceType } from './constants/sources'
-import { fetchCharacters, Character } from './services/characterService'
+import { fetchCharacters } from './services/characterService'
+import { Character } from './models/Character'
 
 function App() {
   const [characters, setCharacters] = useState<Character[]>([]);
