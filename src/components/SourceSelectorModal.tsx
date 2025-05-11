@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SOURCES } from '../constants/sources';
+import { fetchSources } from '../services/sourceService';
 import { CharacterSource } from '../models/CharacterSource';
 
 interface SourceSelectorModalProps {
@@ -16,6 +16,23 @@ export const SourceSelectorModal: React.FC<SourceSelectorModalProps> = ({
   currentSource,
   onSourceChange,
 }) => {
+  const [sources, setSources] = useState<CharacterSource[]>([]);
+
+  useEffect(() => {
+    const loadSources = async () => {
+      try {
+        const fetchedSources = await fetchSources();
+        setSources(fetchedSources);
+      } catch (error) {
+        console.error('Error loading sources:', error);
+      }
+    };
+
+    if (isOpen) {
+      loadSources();
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
@@ -37,7 +54,7 @@ export const SourceSelectorModal: React.FC<SourceSelectorModalProps> = ({
           >
             <h2>Seleccionar Fuente</h2>
             <div className="source-options">
-              {SOURCES.map((source) => (
+              {sources.map((source) => (
                 <button
                   key={source.id}
                   className={`source-option ${currentSource.id === source.id ? 'active' : ''}`}
