@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MemoryGame } from './components/MemoryGame'
 import './App.css'
-import { SOURCES, DEFAULT_SOURCE } from './constants/sources'
+import { fetchSources } from './services/sourceService'
 import { fetchCharacters } from './services/characterService'
 import { Character } from './models/Character'
 import { CharacterSource } from './models/CharacterSource'
@@ -10,7 +10,8 @@ import { CharacterSource } from './models/CharacterSource'
 function App() {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState(true);
-  const [source, setSource] = useState<CharacterSource>(DEFAULT_SOURCE);
+  const [sources, setSources] = useState<CharacterSource[]>([]);
+  const [source, setSource] = useState<CharacterSource | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -26,15 +27,31 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const loadCharacters = async () => {
-      setLoading(true);
+    const loadSources = async () => {
       try {
-        const data = await fetchCharacters(source);
-        setCharacters(data);
+        const fetchedSources = await fetchSources();
+        setSources(fetchedSources);
+        setSource(fetchedSources[0] || null);
       } catch (error) {
-        console.error('Error loading characters:', error);
-      } finally {
-        setLoading(false);
+        console.error('Error loading sources:', error);
+      }
+    };
+
+    loadSources();
+  }, []);
+
+  useEffect(() => {
+    const loadCharacters = async () => {
+      if (source) {
+        setLoading(true);
+        try {
+          const data = await fetchCharacters(source);
+          setCharacters(data);
+        } catch (error) {
+          console.error('Error loading characters:', error);
+        } finally {
+          setLoading(false);
+        }
       }
     };
 
@@ -50,7 +67,7 @@ function App() {
             className="source-selector-button"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            <img src={source.imageMenu} alt={source.nombre} />
+            {source && <img src={source.imageMenu} alt={source.nombre} />}
           </button>
           <AnimatePresence>
             {isDropdownOpen && (
@@ -61,10 +78,10 @@ function App() {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
               >
-                {SOURCES.map((sourceOption) => (
+                {sources.map((sourceOption) => (
                   <button
                     key={sourceOption.id}
-                    className={`dropdown-item ${source.id === sourceOption.id ? 'active' : ''}`}
+                    className={`dropdown-item ${source?.id === sourceOption.id ? 'active' : ''}`}
                     onClick={() => {
                       setSource(sourceOption);
                       setIsDropdownOpen(false);
