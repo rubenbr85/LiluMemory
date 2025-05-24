@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { MemoryGame } from './components/MemoryGame'
 import { GameMenu } from './components/GameMenu'
 import './App.css'
-import { fetchCharacters } from './services/characterService'
+import { fetchCharacters } from './services/characterGameService'
 import { Character } from './models/Character'
 import { CharacterSource } from './models/CharacterSource'
 import { Difficulty } from './models/Difficulty'
@@ -15,9 +15,8 @@ function App() {
   const handleStartGame = async (difficulty: Difficulty, source: CharacterSource) => {
     setLoading(true);
     try {
-      const data = await fetchCharacters(source);
-      // TODO: Aplicar la dificultad para limitar el número de caracteres
-      setCharacters(data.slice(0, difficulty.numberCharacter));
+      const data = await fetchCharacters(source.id, difficulty.id);
+      setCharacters(data);
       setGameStarted(true);
     } catch (error) {
       console.error('Error loading characters:', error);
