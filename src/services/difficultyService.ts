@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { Difficulty } from '../models/Difficulty';
 
-const API_URL = 'http://localhost:3000/api/difficultys';
-// const API_URL = 'https://lilu-memory-backend.vercel.app/api/difficultys';
+//const API_URL = 'http://localhost:3000/api/difficultys';
+const API_URL = 'https://lilu-memory-backend.vercel.app/api/difficultys';
 
 export const fetchDifficultys = async (): Promise<Difficulty[]> => {
   try {

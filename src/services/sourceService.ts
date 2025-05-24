@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { CharacterSource } from '../models/CharacterSource';
 
+//const API_URL = 'http://localhost:3000/api/sources';
 const API_URL = 'https://lilu-memory-backend.vercel.app/api/sources';
+
 
 export const fetchSources = async (): Promise<CharacterSource[]> => {
   try {
