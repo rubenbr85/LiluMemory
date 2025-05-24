@@ -41,7 +41,7 @@ export const GameMenu = ({ onStartGame }: GameMenuProps) => {
   return (
     <div className="flex flex-col items-center gap-8 p-8">
       <div className="text-4xl font-bold text-white mb-8">
-        SELECT DIFFICULTY
+        SELECCIONA DIFICULTAD
       </div>
       
       <div className="flex gap-4">
@@ -62,7 +62,7 @@ export const GameMenu = ({ onStartGame }: GameMenuProps) => {
       </div>
 
       <div className="text-4xl font-bold text-white mt-8 mb-8">
-        SELECT CHARACTER
+        SELECCIONA PERSONAJE
       </div>
 
       <div className="grid grid-cols-4 gap-4">
@@ -96,7 +96,7 @@ export const GameMenu = ({ onStartGame }: GameMenuProps) => {
         onClick={handleStartGame}
         disabled={!selectedDifficulty || !selectedSource}
       >
-        PLAY
+        JUGAR
       </motion.button>
     </div>
   );
