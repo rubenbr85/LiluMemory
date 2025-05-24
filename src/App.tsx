@@ -1,110 +1,60 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import React, { useState } from 'react'
 import { MemoryGame } from './components/MemoryGame'
+import { GameMenu } from './components/GameMenu'
 import './App.css'
-import { fetchSources } from './services/sourceService'
 import { fetchCharacters } from './services/characterService'
 import { Character } from './models/Character'
 import { CharacterSource } from './models/CharacterSource'
+import { Difficulty } from './models/Difficulty'
 
 function App() {
+  const [gameStarted, setGameStarted] = useState(false);
   const [characters, setCharacters] = useState<Character[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [sources, setSources] = useState<CharacterSource[]>([]);
-  const [source, setSource] = useState<CharacterSource | null>(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
-      }
-    };
+  const handleStartGame = async (difficulty: Difficulty, source: CharacterSource) => {
+    setLoading(true);
+    try {
+      const data = await fetchCharacters(source);
+      // TODO: Aplicar la dificultad para limitar el número de caracteres
+      setCharacters(data.slice(0, difficulty.numberCharacter));
+      setGameStarted(true);
+    } catch (error) {
+      console.error('Error loading characters:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  useEffect(() => {
-    const loadSources = async () => {
-      try {
-        const fetchedSources = await fetchSources();
-        setSources(fetchedSources);
-        setSource(fetchedSources[0] || null);
-      } catch (error) {
-        console.error('Error loading sources:', error);
-      }
-    };
-
-    loadSources();
-  }, []);
-
-  useEffect(() => {
-    const loadCharacters = async () => {
-      if (source) {
-        setLoading(true);
-        try {
-          const data = await fetchCharacters(source);
-          setCharacters(data);
-        } catch (error) {
-          console.error('Error loading characters:', error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadCharacters();
-  }, [source]);
+  const handleRestartGame = () => {
+    setGameStarted(false);
+    setCharacters([]);
+  };
 
   return (
     <div className="app">
       <header className="app-header">
         <h1>Lilu Memory</h1>
-        <div className="source-selector" ref={dropdownRef}>
+        {gameStarted && (
           <button 
-            className="source-selector-button"
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="restart-button"
+            onClick={handleRestartGame}
           >
-            {source && <img src={source.imageMenu} alt={source.nombre} />}
+            Volver al Menú
           </button>
-          <AnimatePresence>
-            {isDropdownOpen && (
-              <motion.div
-                className="dropdown-menu"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-              >
-                {sources.map((sourceOption) => (
-                  <button
-                    key={sourceOption.id}
-                    className={`dropdown-item ${source?.id === sourceOption.id ? 'active' : ''}`}
-                    onClick={() => {
-                      setSource(sourceOption);
-                      setIsDropdownOpen(false);
-                    }}
-                  >
-                    <img src={sourceOption.imageMenu} alt={sourceOption.nombre} />
-                    <span>{sourceOption.nombre}</span>
-                  </button>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+        )}
       </header>
       <main>
         {loading ? (
           <div className="loading">Cargando personajes...</div>
-        ) : (
+        ) : gameStarted ? (
           <MemoryGame characters={characters} />
+        ) : (
+          <GameMenu onStartGame={handleStartGame} />
         )}
       </main>
     </div>
   )
 }
 
-export default App 
+export default App
