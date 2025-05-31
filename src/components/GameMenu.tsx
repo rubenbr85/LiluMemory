@@ -39,8 +39,8 @@ export const GameMenu = ({ onStartGame }: GameMenuProps) => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-2 sm:gap-8 p-4 sm:p-8 h-screen">
-      <div className="text-2xl sm:text-4xl font-bold text-white mb-4 sm:mb-8">
+    <div className="flex flex-col items-center gap-2 sm:gap-4 p-4 sm:p-6 h-screen">
+      <div className="text-2xl sm:text-3xl font-bold text-white mb-4 sm:mb-6">
         SELECCIONA DIFICULTAD
       </div>
       
@@ -48,7 +48,7 @@ export const GameMenu = ({ onStartGame }: GameMenuProps) => {
         {difficulties.map((difficulty) => (
           <motion.button
             key={difficulty.id}
-            className={`px-4 sm:px-8 py-2 sm:py-4 rounded-full text-lg sm:text-2xl font-bold shadow-lg transition-colors
+            className={`px-4 sm:px-6 py-2 sm:py-3 rounded-full text-lg sm:text-xl font-bold shadow-lg transition-colors
               ${selectedDifficulty?.id === difficulty.id 
                 ? 'bg-blue-500 text-white' 
                 : 'bg-white text-gray-700 hover:bg-gray-100'}`}
@@ -61,7 +61,7 @@ export const GameMenu = ({ onStartGame }: GameMenuProps) => {
         ))}
       </div>
 
-      <div className="text-2xl sm:text-4xl font-bold text-white mt-4 sm:mt-8 mb-4 sm:mb-8">
+      <div className="text-2xl sm:text-3xl font-bold text-white mt-4 sm:mt-6 mb-4 sm:mb-6">
         SELECCIONA PERSONAJE
       </div>
 
@@ -69,8 +69,8 @@ export const GameMenu = ({ onStartGame }: GameMenuProps) => {
         {sources.map((source) => (
           <motion.button
             key={source.id}
-            className={`p-2 sm:p-4 rounded-full bg-white ${
-              selectedSource?.id === source.id ? 'ring-2 sm:ring-4 ring-blue-500' : ''
+            className={`p-2 sm:p-3 rounded-full bg-white ${
+              selectedSource?.id === source.id ? 'ring-2 ring-blue-500' : ''
             }`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -79,14 +79,14 @@ export const GameMenu = ({ onStartGame }: GameMenuProps) => {
             <img
               src={source.imageMenu}
               alt={source.nombre}
-              className="w-12 h-12 sm:w-16 sm:h-16 rounded-full"
+              className="w-12 h-12 sm:w-14 sm:h-14 rounded-full"
             />
           </motion.button>
         ))}
       </div>
 
       <motion.button
-        className={`mt-4 sm:mt-8 px-8 sm:px-16 py-2 sm:py-4 text-xl sm:text-2xl font-bold rounded-full shadow-lg ${
+        className={`mt-4 sm:mt-6 px-8 sm:px-12 py-2 sm:py-3 text-xl sm:text-xl font-bold rounded-full shadow-lg ${
           selectedDifficulty && selectedSource
             ? 'bg-green-500 text-white hover:bg-green-600'
             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
