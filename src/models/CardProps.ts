@@ -4,5 +4,6 @@ export interface CardProps {
   imageUrl: string;
   isFlipped: boolean;
   isMatched: boolean;
+  isMismatched: boolean;
   onClick: () => void;
 } 

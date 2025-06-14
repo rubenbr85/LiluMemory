@@ -12,6 +12,7 @@ export const MemoryGame = ({ characters }: MemoryGameProps) => {
   const [cards, setCards] = useState<CardModel[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [matchedPairs, setMatchedPairs] = useState<number[]>([]);
+  const [mismatchedCards, setMismatchedCards] = useState<number[]>([]);
   const [isGameComplete, setIsGameComplete] = useState(false);
 
   useEffect(() => {
@@ -49,8 +50,10 @@ export const MemoryGame = ({ characters }: MemoryGameProps) => {
         setMatchedPairs([...matchedPairs, firstCard, secondCard]);
         setFlippedCards([]);
       } else {
+        setMismatchedCards([firstCard, secondCard]);
         setTimeout(() => {
           setFlippedCards([]);
+          setMismatchedCards([]);
         }, 1000);
       }
     }
@@ -61,6 +64,7 @@ export const MemoryGame = ({ characters }: MemoryGameProps) => {
     setCards(shuffledCards);
     setFlippedCards([]);
     setMatchedPairs([]);
+    setMismatchedCards([]);
     setIsGameComplete(false);
   };
 
@@ -75,6 +79,7 @@ export const MemoryGame = ({ characters }: MemoryGameProps) => {
             imageUrl={card.imageUrl}
             isFlipped={flippedCards.includes(card.id)}
             isMatched={matchedPairs.includes(card.id)}
+            isMismatched={mismatchedCards.includes(card.id)}
             onClick={() => handleCardClick(card.id)}
           />
         ))}
