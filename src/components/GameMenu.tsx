@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useDifficultys } from '../services/difficultyService';
-import { fetchSources } from '../services/sourceService';
+import { useSources } from '../services/sourceService';
 import { Difficulty } from '../models/Difficulty';
 import { CharacterSource } from '../models/CharacterSource';
 
@@ -11,22 +11,9 @@ interface GameMenuProps {
 
 export const GameMenu = ({ onStartGame }: GameMenuProps) => {
   const { data: difficulties = [], isLoading: isLoadingDifficulties, error: difficultiesError } = useDifficultys();
-  const [sources, setSources] = useState<CharacterSource[]>([]);
+  const { data: sources = [], isLoading: isLoadingSources, error: sourcesError } = useSources();
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | null>(null);
   const [selectedSource, setSelectedSource] = useState<CharacterSource | null>(null);
-
-  useEffect(() => {
-    const loadSources = async () => {
-      try {
-        const sourcesData = await fetchSources();
-        setSources(sourcesData);
-      } catch (error) {
-        console.error('Error loading sources:', error);
-      }
-    };
-
-    loadSources();
-  }, []);
 
   const handleStartGame = () => {
     if (selectedDifficulty && selectedSource) {
@@ -34,12 +21,12 @@ export const GameMenu = ({ onStartGame }: GameMenuProps) => {
     }
   };
 
-  if (isLoadingDifficulties) {
+  if (isLoadingDifficulties || isLoadingSources) {
     return <div className="text-white text-center">Cargando...</div>;
   }
 
-  if (difficultiesError) {
-    return <div className="text-red-500 text-center">Error al cargar las dificultades</div>;
+  if (difficultiesError || sourcesError) {
+    return <div className="text-red-500 text-center">Error al cargar los datos</div>;
   }
 
   return (
