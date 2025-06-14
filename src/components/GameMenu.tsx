@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { fetchDifficultys } from '../services/difficultyService';
+import { useDifficultys } from '../services/difficultyService';
 import { fetchSources } from '../services/sourceService';
 import { Difficulty } from '../models/Difficulty';
 import { CharacterSource } from '../models/CharacterSource';
@@ -10,26 +10,22 @@ interface GameMenuProps {
 }
 
 export const GameMenu = ({ onStartGame }: GameMenuProps) => {
-  const [difficulties, setDifficulties] = useState<Difficulty[]>([]);
+  const { data: difficulties = [], isLoading: isLoadingDifficulties, error: difficultiesError } = useDifficultys();
   const [sources, setSources] = useState<CharacterSource[]>([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | null>(null);
   const [selectedSource, setSelectedSource] = useState<CharacterSource | null>(null);
 
   useEffect(() => {
-    const loadData = async () => {
+    const loadSources = async () => {
       try {
-        const [difficultyData, sourcesData] = await Promise.all([
-          fetchDifficultys(),
-          fetchSources()
-        ]);
-        setDifficulties(difficultyData);
+        const sourcesData = await fetchSources();
         setSources(sourcesData);
       } catch (error) {
-        console.error('Error loading game data:', error);
+        console.error('Error loading sources:', error);
       }
     };
 
-    loadData();
+    loadSources();
   }, []);
 
   const handleStartGame = () => {
@@ -37,6 +33,14 @@ export const GameMenu = ({ onStartGame }: GameMenuProps) => {
       onStartGame(selectedDifficulty, selectedSource);
     }
   };
+
+  if (isLoadingDifficulties) {
+    return <div className="text-white text-center">Cargando...</div>;
+  }
+
+  if (difficultiesError) {
+    return <div className="text-red-500 text-center">Error al cargar las dificultades</div>;
+  }
 
   return (
     <div className="flex flex-col items-center gap-2 sm:gap-4 p-4 sm:p-6 h-screen">
